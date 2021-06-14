@@ -17,7 +17,7 @@ npm install -g ts-node
 
 #### Typescript Hello World!
 
-let message: string = ‘Hello, World!’;
+let message: string = 'Hello, World!';
 console.log(message);
 ```sh
 --> tsc app.ts
@@ -27,6 +27,98 @@ or
 --> ts-node app.ts
 ```
 
+#### Create the project structure
+First, create a new directory called `nodets`. Directory name you can decide.
+Second, create two sub-directories under the `nodets` called `build` and `src`.
+You’ll store the TypeScript code in the `src` directory.
+Once the TypeScript compiler compiles the source TypeScript files, it will store the output files in the `build` directory.
+
+##### Configure the TypeScript compiler
+Run the following command in the `nodets` directory to create the `tsconfig.json` file:
+```sh
+tsc --init
+```
+You’ll see the `tsconfig.json` created under the nodets directory:
+
+Now, you can open the `tsconfig.json` file. There are many options. In this tutorial, you’ll focus on these two options:
+- `rootdir` – specifies the root directory of the TypeScript input files.
+- `outdir`-stores the JavaScript output files.
+
+These options are commented by default. And you’ll need to uncomment ( remove the `//` at the beginning of the line) and change them as follows:
+
+For the `outDir` option:
+```sh
+"outDir": "./build"
+```
+And for the `rootDir` option:
+```sh
+"rootDir": "./src"
+```
+To verify the new configuration, you can create a new file called app.ts under the ./src directory and place the following code:
+
+```sh
+console.log('Node.js TypeScript');
+```
+And then run the following command to execute the TypeScript compiler. It’ll compile all the files stored in the `src` directory:
+```sh
+tsc
+```
+If the configuration is correct, you’ll see the `app.js` generated under the `./build` directory:
+
+To run the app.js, you navigate to the build directory and execute the following command:
+```sh
+node app.js
+```
+
+This is time-consuming.
+
+Luckly, you can automate the whole process using some Node.js modules.
+
+##### Install Node.js modules
+The `nodemon` module allows you to automatically restart the application when you change the JavaScript source code.
+
+The `concurrently` module runs multiple commands concurrently.
+
+First, execute the `npm init` command from the root directory of the project:
+
+```sh
+npm init --yes
+```
+Next, install the `nodemon` and `concurrently` module:
+```sh
+npm install --g nodemon concurrently
+```
+Open `package.json` file and change the scripts option to the following:
+```sh
+"scripts": {
+    "start:build": "tsc -w",
+    "start:run": "nodemon build/app.js",
+    "start": "concurrently npm:start:*"
+}
+```
+
+This `"start:build": "tsc -w"` will watch for the changes in the `./src` directory and compile them automatically.
+
+This `"start:run": "nodemon build/app.js"` will automatically run the `app.js` in the `./build` directory whenever the new file is generated.
+
+This `"start": "concurrently npm:start:*"` runs all the commands that start with `npm:start:*`, which executes both `start:build` and `start:run` commands above.
+
+Also change main from 
+```sh
+"main": "index.js"
+```
+to
+```sh
+"main": "app.js"
+```
+
+Finally, execute the following command:
+```sh
+npm start
+```
+To verify the configuration, you change some code in the `app.ts`. And you’ll see the output in the console.
+
+
 #### Why typescript?
 
 -> TypeScript adds a type system to help you avoid many problems with dynamic types in JavaScript.
@@ -35,7 +127,7 @@ or
 ```sh
 let box;
 console.log(typeof(box)); // undefined
-box = “Hello”;
+box = "Hello";
 console.log(typeof(box)); // string
 box = 100;
 console.log(typeof(box)); // number
@@ -68,7 +160,7 @@ const constantName: type = value;
 ```
 
 ```sh
-let name: string = ‘John’;
+let name: string = 'John';
 let age: number = 25;
 let active: boolean = true;
 ```
@@ -77,7 +169,7 @@ let active: boolean = true;
 To annotate an array type you use use a specific type followed by a square bracket : type[]
 ```sh
 let arrayName: type[];
-let names: string[] = [‘John’, ‘Jane’, ‘Peter’, ‘David’, ‘Mary’];
+let names: string[] = ['John', 'Jane', 'Peter', 'David', 'Mary'];
 ```
 
 #### Object Type
@@ -89,7 +181,7 @@ let person: {
 };
 
 person = {
-   name: ‘John’,
+   name: 'John',
    age: 25
 }; // valid
 
@@ -99,7 +191,7 @@ OR
    name: string;
    age: number
 } = {
-   name: ‘John’,
+   name: 'John',
    age: 25
 }; // valid
 ```
@@ -114,12 +206,12 @@ greeting = function (name: string) {
 
 // This will cauase error
 greeting = function () {
-    console.log(‘Hello’);
+    console.log('Hello');
 };
 ```
 
 #### Type Inference
-Type inference describes where and how TypeScript infers types when you don’t explicitly annotate them.
+Type inference describes where and how TypeScript infers types when you don't explicitly annotate them.
 ```sh
 let counter = 0;
 // The above line is equivalent to
@@ -128,7 +220,7 @@ let counter: number = 0; // implicit type infer by Typescript
 function increment(counter: number) {
     return counter++;
 }
-// It’s return type is implicitely infered by Typescript based on return
+// It's return type is implicitely infered by Typescript based on return
 function increment(counter: number) : number {
     return counter++;
 }
@@ -150,11 +242,11 @@ A tuple works like an array with some additional considerations:
 - The types of elements are known, and need not be the same.
 ```sh
 let skill: [string, number];
-skill = [‘Programming’, 5];
+skill = ['Programming', 5];
 
 // Below code will throw error as order of values is important
 let skill: [string, number];
-skill = [5, ‘Programming’];
+skill = [5, 'Programming'];
 ```
 
 ##### Enum Type
@@ -198,23 +290,23 @@ console.log(isItSummer(6)); // true
 // JavaScript code generated for enum
 var Month;
 (function (Month) {
-    Month[Month[“Jan”] = 0] = “Jan”;
-    Month[Month[“Feb”] = 1] = “Feb”;
-    Month[Month[“Mar”] = 2] = “Mar”;
-    Month[Month[“Apr”] = 3] = “Apr”;
-    Month[Month[“May”] = 4] = “May”;
-    Month[Month[“Jun”] = 5] = “Jun”;
-    Month[Month[“Jul”] = 6] = “Jul”;
-    Month[Month[“Aug”] = 7] = “Aug”;
-    Month[Month[“Sep”] = 8] = “Sep”;
-    Month[Month[“Oct”] = 9] = “Oct”;
-    Month[Month[“Nov”] = 10] = “Nov”;
-    Month[Month[“Dec”] = 11] = “Dec”;
+    Month[Month["Jan"] = 0] = "Jan";
+    Month[Month["Feb"] = 1] = "Feb";
+    Month[Month["Mar"] = 2] = "Mar";
+    Month[Month["Apr"] = 3] = "Apr";
+    Month[Month["May"] = 4] = "May";
+    Month[Month["Jun"] = 5] = "Jun";
+    Month[Month["Jul"] = 6] = "Jul";
+    Month[Month["Aug"] = 7] = "Aug";
+    Month[Month["Sep"] = 8] = "Sep";
+    Month[Month["Oct"] = 9] = "Oct";
+    Month[Month["Nov"] = 10] = "Nov";
+    Month[Month["Dec"] = 11] = "Dec";
 })(Month || (Month = {}));
 ```
 
 ##### Any Type
-Sometimes, you may need to store a value in a variable. But you don’t know its type at the time of writing the program. And the unknown value may come from a third party API or user input.
+Sometimes, you may need to store a value in a variable. But you don't know its type at the time of writing the program. And the unknown value may come from a third party API or user input.
 
 ```sh
 let result: any;
@@ -222,7 +314,7 @@ result = 10.123;
 console.log(result.toFixed());
 result.willExist(); //
 
-In this example, the TypeScript compiler doesn’t issue any warning even the willExist() method doesn’t exist at compile time because the willExist() method might available at runtime.
+In this example, the TypeScript compiler doesn't issue any warning even the willExist() method doesn't exist at compile time because the willExist() method might available at runtime.
 ```
 
 ##### Void Type
@@ -242,13 +334,13 @@ function raiseError(message: string): never {
 
 // The return type of the following function is inferred to the never type:
 function reject() {
-   return raiseError(‘Rejected’);
+   return raiseError('Rejected');
 }
 
 // If you have a function expression that contains an indefinite loop, its return type is also the never type. For example:
 let loop = function forever() {
     while (true) {
-        console.log(‘Hello’);
+        console.log('Hello');
     }
 }
 ```
@@ -258,7 +350,7 @@ Union type is useful when you run into a function that expects a parameter that 
 ```sh
 let result: number | string;
 result = 10; // OK
-result = ‘Hi’; // also OK
+result = 'Hi'; // also OK
 result = false; // a boolean value, not OK
 ```
 
@@ -273,23 +365,23 @@ let messsage: chars; // same as string type
 type alphanumeric = string | number;
 let input: alphanumeric;
 input = 100; // valid
-input = ‘Hi’; // valid
+input = 'Hi'; // valid
 input = false; // Compiler error
 ```
 
 ##### String literal type
 The string literal types allow you to define a type that accepts only one specified string literal.
 ```sh
-let click: ‘click’;
-click = ‘click’; // valid
-click = ‘dblclick’; // compiler error
+let click: 'click';
+click = 'click'; // valid
+click = 'dblclick'; // compiler error
 
-let mouseEvent: ‘click’ | ‘dblclick’ | ‘mouseup’ | ‘mousedown’;
-mouseEvent = ‘click’; // valid
-mouseEvent = ‘dblclick’; // valid
-mouseEvent = ‘mouseup’; // valid
-mouseEvent = ‘mousedown’; // valid
-mouseEvent = ‘mouseover’; // compiler error
+let mouseEvent: 'click' | 'dblclick' | 'mouseup' | 'mousedown';
+mouseEvent = 'click'; // valid
+mouseEvent = 'dblclick'; // valid
+mouseEvent = 'mouseup'; // valid
+mouseEvent = 'mousedown'; // valid
+mouseEvent = 'mouseover'; // compiler error
 ```
 
 #### CONTROL FLOW STATEMENTS
@@ -329,7 +421,7 @@ add = function (x: string, y: string): number {
 To make a function parameter optional, you use the ? after the parameter name. For example:
 ```sh
 function multiply(a: number, b: number, c?: number): number {
-    if (typeof c !== ‘undefined’) {
+    if (typeof c !== 'undefined') {
         return a * b * c;
     }
     return a * b;
@@ -366,7 +458,7 @@ console.log(getTotal(10, 20, 30)); // 60
 ##### Function overloadings
 Function overloadings allow you to establish the relationship between the parameter types and result types of function.
 
-Let’s start with some simple functions:
+Let's start with some simple functions:
 ```sh
 function addNumbers(a: number, b: number): number {
     return a + b;
@@ -379,17 +471,17 @@ function addStrings(a: string, b: string): string {
 - The addNumbers() function returns the sum of two numbers.
 - The addStrings() function returns the concatenation of two strings.
 
-It’s possible to use a union type to define a range of types for function parameters and results:
+It's possible to use a union type to define a range of types for function parameters and results:
 ```sh
 function add(a: number | string, b: number | string): number | string {
-    if (typeof a === ‘number’ && typeof b === ‘number’)
+    if (typeof a === 'number' && typeof b === 'number')
         return a + b;
 
-    if (typeof a === ‘string’ && typeof b === ‘string’)
+    if (typeof a === 'string' && typeof b === 'string')
         return a + b;
 }
 ```
-However, the union type doesn’t express the relationship between the parameter types and results accurately.
+However, the union type doesn't express the relationship between the parameter types and results accurately.
 
 To better describe the relationships between the types used by a function, TypeScript supports function overloadings. For example:
 ```sh
@@ -426,7 +518,7 @@ console.log(counter.count(20)); // return an array
 ```
 
 #### TypeScript Class
-JavaScript does not have a concept of class like other programming languages such as Java and C#. In ES5, you can use a constructor function and prototype inheritance to create a “class”
+JavaScript does not have a concept of class like other programming languages such as Java and C#. In ES5, you can use a constructor function and prototype inheritance to create a "class"
 ```sh
 class Person {
     ssn: string;
@@ -470,12 +562,12 @@ class Person {
     }
 }
 
-let person = new Person(‘153-07-3130’, ‘John’, ‘Doe’);
+let person = new Person('153-07-3130', 'John', 'Doe');
 console.log(person.ssn); // compile error
 ```
 
 ##### Public modifier
-The public modifier allows class properties and methods to be accessible from all locations. If you don’t specify any access modifier for properties and methods, they will take the public modifier by default.
+The public modifier allows class properties and methods to be accessible from all locations. If you don't specify any access modifier for properties and methods, they will take the public modifier by default.
 
 ```sh
 class Person {
@@ -523,8 +615,8 @@ person.birthDate = new Date(1991, 12, 25); // Compile error
 #### TypeScript Getters and Setters
 To get and set properties of a class.
 For each property:
-- A getter method returns the value of the property’s value. A getter is also called an accessor.
-- A setter method updates the property’s value. A setter is also known as a mutator.
+- A getter method returns the value of the property's value. A getter is also called an accessor.
+- A setter method updates the property's value. A setter is also known as a mutator.
 
 A getter method starts with the keyword get and a setter method starts with the keyword set
 ```sh
@@ -540,7 +632,7 @@ class Person {
 
     public set age(theAge: number) {
         if (theAge <= 0 || theAge >= 200) {
-            throw new Error(‘The age is invalid’);
+            throw new Error('The age is invalid');
         }
         this._age = theAge;
     }
@@ -586,7 +678,7 @@ class Employee extends Person {
     }
 }
 
-let employee = new Employee(‘John’,‘Doe’,‘Front-end Developer’);
+let employee = new Employee('John','Doe','Front-end Developer');
 console.log(employee.getFullName());
 console.log(employee.describe());
 ```
@@ -605,7 +697,7 @@ class Employee extends Person {
     }
 
     describe(): string {
-        return super.describe() + `I’m a ${this.jobTitle}.`;
+        return super.describe() + `I'm a ${this.jobTitle}.`;
     }
 }
 ```
@@ -627,8 +719,8 @@ class Employee {
     }
 }
 
-let john = new Employee(‘John’, ‘Doe’, ‘Front-end Developer’);
-let jane = new Employee(‘Jane’, ‘Doe’, ‘Back-end Developer’);
+let john = new Employee('John', 'Doe', 'Front-end Developer');
+let jane = new Employee('Jane', 'Doe', 'Back-end Developer');
 
 console.log(Employee.headcount); // 2
 ```
@@ -651,8 +743,8 @@ class Employee {
     }
 }
 
-let john = new Employee(‘John’, ‘Doe’, ‘Front-end Developer’);
-let jane = new Employee(‘Jane’, ‘Doe’, ‘Back-end Developer’);
+let john = new Employee('John', 'Doe', 'Front-end Developer');
+let jane = new Employee('Jane', 'Doe', 'Back-end Developer');
 console.log(Employee.getHeadcount); // 2
 ```
 
@@ -693,8 +785,8 @@ class Contractor extends Employee {
 }
 ```
 ```sh
-let john = new FullTimeEmployee(‘John’, ‘Doe’, 12000);
-let jane = new Contractor(‘Jane’, ‘Doe’, 100, 160);
+let john = new FullTimeEmployee('John', 'Doe', 12000);
+let jane = new Contractor('Jane', 'Doe', 100, 160);
 
 console.log(john.compensationStatement());
 console.log(jane.compensationStatement());
@@ -717,8 +809,8 @@ function getFullName(person: Person) {
 }
 
 let john = {
-    firstName: ‘John’,
-    lastName: ‘Doe’
+    firstName: 'John',
+    lastName: 'Doe'
 };
 
 console.log(getFullName(john));
@@ -748,12 +840,12 @@ interface Person {
 
 let person: Person;
 person = {
-    ssn: ‘171-28-0926’,
-    firstName: ‘John’,
-    lastName: ‘Doe’
+    ssn: '171-28-0926',
+    firstName: 'John',
+    lastName: 'Doe'
 }
 // Throws error
-person.ssn = ‘171-28-0000’;
+person.ssn = '171-28-0000';
 ```
 Function types
 ```sh
@@ -765,7 +857,7 @@ let format: StringFormat;
 format = function (str: string, isUpper: boolean) {
     return isUpper ? str.toLocaleUpperCase() : str.toLocaleLowerCase();
 };
-console.log(format(‘hi’, true));
+console.log(format('hi', true));
 ```
 Class Types
 ```sh
@@ -784,11 +876,11 @@ class Person implements Json {
 }
 
 The following example shows how to use the Person class:
-let person = new Person(‘John’, ‘Doe’);
+let person = new Person('John', 'Doe');
 console.log(person.toJson());
 
 <!--Output-->
-{“firstName”:“John”,“lastName”:“Doe”}
+{"firstName":"John","lastName":"Doe"}
 ```
 
 #### Extend Interfaces in TypeScript
@@ -907,34 +999,34 @@ type Employee = Identity & Contact;
 
 let e: Employee = {
     id: 100,
-    name: ‘John Doe’,
-    email: ‘john.doe@example.com’,
-    phone: ‘(408)-897-5684’
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    phone: '(408)-897-5684'
 };
 ```
 
 #### Type Casting
-JavaScript doesn’t have a concept of type casting because variables have dynamic types. However, every variable in TypeScript has a type. Type castings allow you to convert a variable from one type to another.
+JavaScript doesn't have a concept of type casting because variables have dynamic types. However, every variable in TypeScript has a type. Type castings allow you to convert a variable from one type to another.
 In TypeScript, you can use the `as` keyword or `<>` operator for type castings.
 
 The following selects the first input element by using the `querySelector()` method:
 ```sh
-let input = document.querySelector(’input[“type=“text”]’);
+let input = document.querySelector('input[type="text"]');
 ```
 Since the returned type of the `document.querySelector()` method is the `Element` type, the following code causes a compiler error:
 ```sh
 console.log(input.value);
 ```
 
-The reason is that the value property doesn’t exist in the `Element` type. It only exists on the `HTMLInputElement` type.
+The reason is that the value property doesn't exist in the `Element` type. It only exists on the `HTMLInputElement` type.
 
 To resolve this, you can use type casting that cast the `Element` to `HTMLInputElement` by using the as keyword like this:
 ```sh
-let input = document.querySelector(‘input[type=“text”]’) as HTMLInputElement;
+let input = document.querySelector('input[type="text"]') as HTMLInputElement;
 ```
 Type Casting using the `<>` operator
 ```sh
-let input = <HTMLInputElement>document.querySelector(‘input[type=“text”]‘);
+let input = <HTMLInputElement>document.querySelector('input[type="text"]');
 console.log(input.value);
 ```
 
@@ -982,12 +1074,12 @@ function getRandomStringElement(items: string[]): string {
 }
 ```
 ```sh
-let colors = [‘red’, ‘green’, ‘blue’];
+let colors = ['red', 'green', 'blue'];
 console.log(getRandomStringElement(colors));
 ```
 The logic of the `getRandomStringElement()` function is the same as the one in the `getRandomNumberElement()` function.
 
-This can be solved by using `any` type like below code but there is a drawback it doesn’t ensure the return type of the function.
+This can be solved by using `any` type like below code but there is a drawback it doesn't ensure the return type of the function.
 ```sh
 function getRandomAnyElement(items: any[]): any {
     let randomIndex = Math.floor(Math.random() * items.length);
@@ -1025,15 +1117,15 @@ The `merge()` function merges two objects with the type `U` and `V`. It combines
 The following illustrates how to use the `merge()` function that merges two objects:
 ```sh
 let result = merge(
-    { name: ‘John’ },
-    { jobTitle: ‘Frontend Developer’ }
+    { name: 'John' },
+    { jobTitle: 'Frontend Developer' }
 );
 
 console.log(result);
 ```
 ```sh
 // Output
-{ name: ‘John’, jobTitle: ‘Frontend Developer’ }
+{ name: 'John', jobTitle: 'Frontend Developer' }
 ```
 The following are benefits of TypeScript generics:
 - Leverage type checks at the compile time.
@@ -1053,23 +1145,23 @@ function merge<U, V>(obj1: U, obj2: V) {
 The `merge()` is a generic function that merges two objects. For example:
 ```sh
 let person = merge(
-    { name: ‘John’ },
+    { name: 'John' },
     { age: 25 }
 );
 
 console.log(result);
 ```
 It wroks perfectly fine.
-The `merge()` function expects two objects. However, it doesn’t prevent you from passing a non-object like this:
+The `merge()` function expects two objects. However, it doesn't prevent you from passing a non-object like this:
 ```sh
 let person = merge(
-    { name: ‘John’ },
+    { name: 'John' },
     25
 );
 
 console.log(person);
 ```
-Typescript doesn’t issue any error
+Typescript doesn't issue any error
 
 Instead of working with all types, you may want to add a constraint to the merge() function so that it works with objects only.
 In order to denote the constraint, you use the `extends` keyword. For example:
@@ -1084,7 +1176,7 @@ function merge<U extends object, V extends object>(obj1: U, obj2: V) {
 The following will result in an error:
 ```sh
 let person = merge(
-    { name: ‘John’ },
+    { name: 'John' },
     25
 );
 ```
@@ -1113,14 +1205,14 @@ class Stack<T> {
     }
     push(element: T): void {
         if (this.elements.length === this.size) {
-            throw new Error(‘The stack is overflow!’);
+            throw new Error('The stack is overflow!');
         }
         this.elements.push(element);
 
     }
     pop(): T {
         if (this.elements.length == 0) {
-            throw new Error(‘The stack is empty!’);
+            throw new Error('The stack is empty!');
         }
         return this.elements.pop();
     }
