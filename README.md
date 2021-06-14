@@ -12,19 +12,19 @@ npm install -g typescript
 tsc --v
 
 npm install -g ts-node
--> To run typescript file directly
+To run typescript file directly
 ```
 
 #### Typescript Hello World!
 
-let message: string = 'Hello, World!';
+let message: string = 'Hello, World!';    
 console.log(message);
 ```sh
---> tsc app.ts
---> node app.js
+tsc app.ts
+node app.js
 
 or
---> ts-node app.ts
+ts-node app.ts
 ```
 
 #### Create the project structure
@@ -54,7 +54,7 @@ And for the `rootDir` option:
 ```sh
 "rootDir": "./src"
 ```
-To verify the new configuration, you can create a new file called app.ts under the ./src directory and place the following code:
+To verify the new configuration, you can create a new file called `app.ts` under the `./src` directory and place the following code:
 
 ```sh
 console.log('Node.js TypeScript');
@@ -65,7 +65,7 @@ tsc
 ```
 If the configuration is correct, you’ll see the `app.js` generated under the `./build` directory:
 
-To run the app.js, you navigate to the build directory and execute the following command:
+To run the `app.js`, you navigate to the build directory and execute the following command:
 ```sh
 node app.js
 ```
@@ -121,8 +121,8 @@ To verify the configuration, you change some code in the `app.ts`. And you’ll 
 
 #### Why typescript?
 
--> TypeScript adds a type system to help you avoid many problems with dynamic types in JavaScript.
--> TypeScript implements the future features of JavaScript a.k.a ES Next so that you can use them today.
+- TypeScript adds a type system to help you avoid many problems with dynamic types in JavaScript.
+- TypeScript implements the future features of JavaScript a.k.a ES Next so that you can use them today.
 
 ```sh
 let box;
@@ -236,7 +236,7 @@ Object Type
 Array Type
 ```
 
-##### Typle Type
+##### Tuple Type
 A tuple works like an array with some additional considerations:
 - The number of elements in the tuple is fixed.
 - The types of elements are known, and need not be the same.
